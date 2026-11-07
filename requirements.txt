@@ -1,5 +1,5 @@
 pytelegrambotapi==4.14.0
-edge-tts==6.1.9
+gtts==2.4.0
 moviepy==1.0.3
 requests==2.31.0
 google-genai==3.0.0
