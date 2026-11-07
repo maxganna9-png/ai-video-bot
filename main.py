@@ -1,8 +1,7 @@
 import os
-import asyncio
 import requests
 import telebot
-import edge_tts
+from gtts import gTTS
 from google import genai
 from flask import Flask
 from threading import Thread
@@ -27,7 +26,6 @@ def run_flask():
     port = int(os.environ.get("PORT", 10000))
     app.run(host='0.0.0.0', port=port)
 
-# টেলিগ্রাম বট হ্যান্ডলার
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
     bot.reply_to(message, "স্বাগতম! আপনার ফ্রী এআই ভিডিও বট রেডি। আমাকে যেকোনো টপিক লিখে পাঠান।")
@@ -50,11 +48,9 @@ def create_ai_video(message):
         )
         script_text = response.text
 
-        # ২. ভয়েসওভার তৈরি
-        async def generate_voice():
-            communicate = edge_tts.Communicate(script_text, "en-US-ChristopherNeural")
-            await communicate.save(audio_file)
-        asyncio.run(generate_voice())
+        # ২. gTTS (Google Text-to-Speech) দিয়ে ভয়েসওভার তৈরি (কোনো 403 এরর দেবে না)
+        tts = gTTS(text=script_text, lang='en', slow=False)
+        tts.save(audio_file)
 
         # ৩. Pixabay থেকে ভিডিও ডাউনলোড
         pixabay_url = f"https://pixabay.com/api/videos/?key={PIXABAY_API_KEY}&q={requests.utils.quote(topic)}&orientation=vertical&per_page=3"
@@ -93,9 +89,8 @@ def create_ai_video(message):
         bot.reply_to(message, f"❌ একটি ত্রুটি ঘটেছে: {str(e)}")
 
 if __name__ == "__main__":
-    # ফ্লাস্ক সার্ভারকে ব্যাকগ্রাউন্ডে রান করানো যাতে Render পোর্ট এরর না দেয়
     t = Thread(target=run_flask)
     t.start()
     
-    print("AI Video Bot is running via Web Service...")
+    print("AI Video Bot with gTTS is running...")
     bot.infinity_polling(none_stop=True, interval=0)
