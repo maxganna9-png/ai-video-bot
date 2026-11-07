@@ -45,7 +45,7 @@ def create_ai_video(message):
         # ১. জেমিনি দিয়ে স্ক্রিপ্ট তৈরি
         prompt = f"Write a viral 40-second YouTube Shorts script about {topic}. Make it engaging and fast-paced. No stage directions, only spoken text."
         response = ai_client.models.generate_content(
-            model='gemini-2.5-flash',
+            model='gemini-3.8-flash',
             contents=prompt,
         )
         script_text = response.text
