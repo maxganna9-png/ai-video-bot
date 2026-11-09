@@ -42,7 +42,7 @@ def send_media_separately(message):
         prompt = f"Write a catchy 30-second YouTube Shorts script about {topic}. Only spoken text, no extra formatting."
         
         response = ai_client.models.generate_content(
-            model='gemini-2.0-flash',
+            model='gemini-3.8-flash',
             contents=prompt,
         )
         script_text = response.text
